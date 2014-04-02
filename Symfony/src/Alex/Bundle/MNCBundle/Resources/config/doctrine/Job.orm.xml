@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Alex\Bundle\MNCBundle\Entity\Job" table="job">
+    <indexes>
+      <index name="immediate" columns="immediate"/>
+    </indexes>
+    <id name="jobId" type="integer" column="job_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="description" type="string" column="description" length="200" nullable="false"/>
+    <field name="salary" type="decimal" column="salary" precision="6" scale="2" nullable="true"/>
+    <many-to-one field="immediate" target-entity="Person">
+      <join-columns>
+        <join-column name="immediate" referenced-column-name="user_id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-many field="user" target-entity="Person" mapped-by="job"/>
+  </entity>
+</doctrine-mapping>

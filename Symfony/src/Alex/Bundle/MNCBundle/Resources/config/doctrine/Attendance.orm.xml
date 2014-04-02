@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Alex\Bundle\MNCBundle\Entity\Attendance" table="attendance">
+    <indexes>
+      <index name="user_id" columns="user_id"/>
+    </indexes>
+    <id name="attId" type="integer" column="att_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="checkHour" type="datetime" column="check_hour" nullable="false"/>
+    <many-to-one field="user" target-entity="Person">
+      <join-columns>
+        <join-column name="user_id" referenced-column-name="user_id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

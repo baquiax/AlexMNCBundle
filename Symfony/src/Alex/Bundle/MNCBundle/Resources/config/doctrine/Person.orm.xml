@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Alex\Bundle\MNCBundle\Entity\Person" table="person">
+    <id name="userId" type="integer" column="user_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="firstname" type="string" column="firstname" length="100" nullable="false"/>
+    <field name="lastnames" type="string" column="lastnames" length="100" nullable="false"/>
+    <field name="address" type="string" column="address" length="250" nullable="false"/>
+    <field name="birthday" type="date" column="birthday" nullable="true"/>
+    <many-to-many field="job" target-entity="Job" inversed-by="user">
+      <join-table name="job_rel">
+        <join-columns>
+          <join-column name="user_id" referenced-column-name="user_id"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="job_id" referenced-column-name="job_id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+  </entity>
+</doctrine-mapping>

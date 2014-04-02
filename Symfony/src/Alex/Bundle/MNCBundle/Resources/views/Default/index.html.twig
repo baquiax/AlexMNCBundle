@@ -1,0 +1,272 @@
+{% block javascripts %}
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="{{ asset('jquery-ui/js/jquery-ui-1.10.4.custom.min.js') }}"></script>
+{% endblock %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+	<style type="text/css">
+		.hidden {
+			display: none;
+		}
+		.hidden input, .hidden select{
+			display: block;
+			width:  100%;
+			height: inherit !important;
+		}
+		a {
+			cursor: pointer;
+		}
+	</style>
+{% endblock %}
+
+<div class="container">
+    <h2>Bienvenido</h2>
+    <p>A continuacion podras encontrar diversas acciones a utilizar dentro del sistema</p>
+    <ul>
+      <li><a id="ne">Agregar Persona</a></li>
+      <li><a id="nj">Registrar puesto de trabajo</a></li>
+      <li><a id="as">Asignar puesto de trabajo</a></li>
+      <li><a id="at">Registrar entrada</a></li>
+    </ul>
+    <script>
+        function fillSearch() {
+             jQuery.ajax({
+                "url": "{{ asset('app_dev.php/mnc/people') }}",
+                "success": function(data) {
+                    jQuery("#search-by-person").empty();
+    	            for (i = 0; i < data.length; i++) {
+    	                var obj = data[i];
+    	                var newHtml = "<option value='" + obj.user_id + "'>(" + obj.user_id + ") " + obj.fullname +"</option>";
+                        jQuery("#search-by-person").append(newHtml);
+    	            }
+    	        }
+            });	       
+        }
+    	jQuery("#nj").click(function() {
+    		jQuery("#nj-form").dialog({
+    			"title": "Registro de puestos de trabajo.",
+    			"buttons": {
+    				"Crear": function() {
+    				    var dialog = this;
+    					jQuery.ajax({
+    						"url": "{{ asset('app_dev.php/mnc/jobs') }}",
+    						"method": "POST",
+    						"type": "JSON",
+    						"data": {
+    							"description": jQuery("#nj-form [name='description']").val(),
+    							"salary": jQuery("#nj-form [name='salary']").val(),
+    							"immediate": jQuery("#nj-form [name='immediate']").val()
+    						},
+    						"success": function(data){
+    							jQuery(dialog).dialog("close");
+    						}
+    					});
+    				},
+    				"Salir": function() {
+    					jQuery(this).dialog("close");
+    				}
+    			}
+    		});
+    	});
+    	jQuery("#ne").click(function() {
+    		jQuery("#ne-form").dialog({
+    			"title": "Registro de personas.",
+    			"buttons": {
+    				"Crear puesto": function() {
+    				    var dialog = this;
+    					jQuery.ajax({
+    						"url": "{{ asset('app_dev.php/mnc/people') }}",
+    						"method": "POST",
+    						"type": "JSON",
+    						"data": {
+    							"firstname": jQuery("#ne-form [name='firstname']").val(),
+    							"lastnames": jQuery("#ne-form [name='lastnames']").val(),
+    							"address": jQuery("#ne-form [name='address']").val()
+    						},
+    						"success": function(data){
+    						    fillSearch();
+    						    jQuery(dialog).dialog("close");
+    						}
+    					});
+    				},
+    				"Salir": function() {
+    					jQuery(this).dialog("close");
+    				}
+    			}
+    		});
+    	});
+    	jQuery("#as").click(function() {
+    	    /*Llenamos los dropdowns*/
+    	    jQuery.ajax({
+    	        "url": "{{ asset('app_dev.php/mnc/jobs') }}",
+    	        "success": function(data) {
+    	            jQuery("#as-form [name='jobs']").empty();
+    	            for (i = 0; i < data.length; i++) {
+    	                var obj = data[i];
+    	                var newHtml = "<option value='" + obj.job_id + "'>" + obj.job_id + ") " + obj.description +"</option>";
+    	                jQuery("#as-form [name='jobs']").append(newHtml);
+    	            }
+    	            jQuery.ajax({
+    	                "url": "{{ asset('app_dev.php/mnc/people') }}",
+    	                "success": function(data) {
+    	                    jQuery("#as-form [name='people']").empty();
+            	            for (i = 0; i < data.length; i++) {
+            	                var obj = data[i];
+            	                var newHtml = "<option value='" + obj.user_id + "'>" + obj.user_id + ") " + obj.fullname +"</option>";
+                                jQuery("#as-form [name='people']").append(newHtml);
+            	            }
+    	                    jQuery("#as-form").dialog({
+                    			"title": "Asignar puesto",
+                    			"buttons": {
+                    				"Asignar": function() {
+                    				    var dialog = this;
+                    					jQuery.ajax({
+                    						"url": "{{ asset('app_dev.php/mnc/worker') }}",
+                    						"method": "POST",
+                    						"type": "JSON",
+                    						"data": {
+                    							"user_id": jQuery("#as-form [name='people'] option:selected").val(),
+                    							"job_id": jQuery("#as-form [name='jobs'] option:selected").val()
+                    						},
+                    						"success": function(data){
+                    						    jQuery(dialog).dialog("close");
+                    						}
+                    					});
+                    				},
+                    				"Salir": function() {
+                    					jQuery(this).dialog("close");
+                    				}
+                    			}
+                    		});
+    	                }
+    	            });        
+    	        }
+    	    });
+    	});
+    	jQuery("#at").click(function() {
+    	    /*Llenamos los dropdowns*/
+            jQuery.ajax({
+                "url": "{{ asset('app_dev.php/mnc/people') }}",
+                "success": function(data) {
+                    jQuery("#at-form [name='people']").empty();
+    	            for (i = 0; i < data.length; i++) {
+    	                var obj = data[i];
+    	                var newHtml = "<option value='" + obj.user_id + "'>" + obj.user_id + ") " + obj.fullname +"</option>";
+                        jQuery("#at-form [name='people']").append(newHtml);
+    	            }
+                    jQuery("#at-form").dialog({
+            			"title": "Registrar entrada",
+            			"buttons": {
+            				"Marcar entrada": function() {
+            				    var dialog = this;
+            					jQuery.ajax({
+            						"url": "{{ asset('app_dev.php/mnc/attendances') }}",
+            						"method": "POST",
+            						"type": "JSON",
+            						"data": {
+            							"user_id": jQuery("#at-form [name='people'] option:selected").val(),
+            						},
+            						"success": function(data){
+            						    jQuery(dialog).dialog("close");
+            						}
+            					});
+            				},
+            				"Salir": function() {
+            					jQuery(this).dialog("close");
+            				}
+            			}
+            		});
+                }
+            });        
+    	});
+    	
+    	function makeAttTable(data) {
+    	    jQuery("#search-result-body").empty();
+    	    var newHtml = "";
+    	    if (!data.length) {
+    	        newHtml = "<td colspan=3>Sin datos</td>";
+    	    }
+    	    for (i = 0; i< data.length; i++) {
+    	        var obj = data[i];
+    	        newHtml += "<tr>";
+    	        newHtml += "<td>" + obj.fullname + "</td>";
+    	        newHtml += "<td>";
+    	        for (j = 0; j < obj.job.length; j++) {
+    	            var job = obj.job[j];
+    	            newHtml += job.description + "<br/>";
+    	        }
+    	        newHtml += "</td>";
+    	        newHtml += "<td>" + obj.date.date + "</td>";
+    	        newHtml +=  "</tr>";
+    	    }
+    	    jQuery("#search-result-body").append(newHtml);
+    	}
+    	
+    	function searchAttendances() {
+    	    var get_parameters = {};
+    	    var user_id = jQuery("#search-by-person option:selected").val();
+    	    if (user_id) {
+    	        get_parameters["user_id"] = user_id;
+    	    }
+            jQuery.ajax({
+                "url": "{{ asset('app_dev.php/mnc/attendances') }}",
+                "data": get_parameters,
+                "success": function(data) {
+                    makeAttTable(data);
+                }
+            });
+    	}
+    </script>
+    <br/><br/>
+    <h4>REPORTE DE ENTRADAS</h4>
+    <div id="search-form">
+        <form>
+            <label>VER REPORTE DE ENTRADA</label>
+            <select id="search-by-person"></select>
+        </form>
+        <script>
+            fillSearch();
+        </script>
+        <button class="btn btn-primary" onclick="searchAttendances()">BUSCAR</button>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Cargo (s)</th>
+            <th>Fecha marcada</th>
+        </tr>
+    </thead>
+    <tbody id="search-result-body">
+    </tbody>
+</table>
+
+<div id="nj-form" class="hidden">
+	<label>Descripcion</label>
+	<input type="text" name="description">
+	<label>Salario</label>
+	<input type="text" name="salary" class="input-xxlarge">
+	<label>Inmediato</label>
+	<input type="text" name="immediate" class="input-xxlarge">
+</div>
+<div id="ne-form" class="hidden">
+	<label>Nombre</label>
+	<input type="text" name="firstname" class="input-xxlarge">
+	<label>Apellido</label>
+	<input type="text" name="lastnames" class="input-xxlarge">
+	<label>Direccion</label>
+	<input type="text" name="address" class="input-xxlarge">
+</div>
+<div id="as-form" class="hidden">
+	<label>Empleado</label>
+	<select name="people"></select>
+	<label>Trabajo</label>
+	<select name="jobs"></select>
+</div>
+<div id="at-form" class="hidden">
+	<label>Empleado</label>
+	<select name="people"></select>
+</div>

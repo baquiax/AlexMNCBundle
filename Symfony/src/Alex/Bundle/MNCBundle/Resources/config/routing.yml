@@ -1,0 +1,15 @@
+amnc_home:
+    pattern: /mnc/
+    defaults: { _controller: AlexMNCBundle:Default:index }
+amnc_new_person:
+    pattern: /mnc/people
+    defaults: { _controller: AlexMNCBundle:Default:getPeople }
+amnc_get_jobs:
+    pattern: /mnc/jobs
+    defaults: { _controller: AlexMNCBundle:Default:getJobs }
+amnc_rel_p_j:
+    pattern: /mnc/worker
+    defaults: { _controller: AlexMNCBundle:Default:addPersonJobRel }
+amnc_attendances:
+    pattern: /mnc/attendances
+    defaults: { _controller: AlexMNCBundle:Default:getAttendances }
