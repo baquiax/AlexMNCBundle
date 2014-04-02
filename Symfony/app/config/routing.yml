@@ -1,0 +1,4 @@
+alex_mnc:
+    resource: "@AlexMNCBundle/Resources/config/routing.yml"
+    prefix:   /
+

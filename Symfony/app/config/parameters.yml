@@ -1,0 +1,14 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: mnc_challenge
+    database_user: alex
+    database_password: pass
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: b82617a96a22ee74ce0f8c0984bc707566d4cb05
+    database_path: null
